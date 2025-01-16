@@ -25,14 +25,14 @@ class ContractSerializer(serializers.ModelSerializer):
         
         return contract
 
+    # Atualiza os contrato e parcelas
     def update(self, instance, validated_data):        
-        # Atualiza os contrato
+        
         parcels_data = validated_data.pop('parcels',None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # Atualiza as parcelas, se fornecidas
         if parcels_data is not None:
             instance.parcels.all().delete()
             Parcel.objects.bulk_create([

@@ -7,11 +7,10 @@ from  rich.console import Console
 console = Console()
 
 #Meu deus  esse framework de teste do django é bem completo,
-#mas o pytest ainda é melhor.
+#Mas o pytest ainda é melhor.
 class ContractAPITestCase(APITestCase):
     console.print("[bold red]Iniciando testes de contrato[/bold red]")
     def setUp(self):
-        # Dados de contrato para teste
         self.contract_data = {
             "cpf": "40876005059",
             "birth_date": "1980-01-01",
@@ -29,7 +28,6 @@ class ContractAPITestCase(APITestCase):
             ]
         }
 
-        # URL para criação de contrato
         self.create_url = reverse('contract-create')  
         
         # Criando o contrato de teste

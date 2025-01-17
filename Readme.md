@@ -78,7 +78,7 @@ Este sistema permite a gestão de contratos financeiros, incluindo a criação, 
 
 ```
 ## Para Atualizar Contrato e Parcelas:
-```
+```json
 {
   "cpf": "98765432100",
   "birth_date": "1990-05-20",

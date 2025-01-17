@@ -15,12 +15,12 @@ class ContractCreateView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            # Verifica se os dados são enviados como uma lista ou como um único contrato
+            # Verifica se os dados são enviados como uma lista ou como um único contrato 
+            # No Swagger isso buga, mas no postman/insominia funciona normalmente
+            # Pra contornar no Swagger precisa adicionar o json do contrato unico dentro de uma lista.
             if isinstance(request.data, list):
-                # Caso seja uma lista de contratos, processa todos
                 serializer = self.get_serializer(data=request.data, many=True)
             else:
-                # Caso seja um único contrato, processa o contrato único
                 serializer = self.get_serializer(data=request.data)
 
             serializer.is_valid(raise_exception=True)
@@ -60,19 +60,16 @@ class ContractListAllView(generics.ListAPIView):
 class ContractSummaryView(APIView): 
     def get(self, request):
         filters = {}
-
-        # Obtendo parâmetros de consulta
+        
         cpf = request.query_params.get('cpf', None)
         issue_date = request.query_params.get('issue_date', None)
         address_state = request.query_params.get('address_state', None)
 
-        # Aplicando filtros conforme os parâmetros passados
         if cpf:
             filters['cpf'] = cpf
         if issue_date:
             # Verificando se issue_date é ano, mês/ano ou data completa
             try:
-                # Se for apenas ano
                 filters['issue_date__year'] = int(issue_date)
             except ValueError:
                 try:
@@ -82,25 +79,21 @@ class ContractSummaryView(APIView):
                 except ValueError:
                     try:
                         # Se for data completa (dd/mm/yyyy)
-                        filters['issue_date'] = issue_date  # Espera que a data seja passada no formato correto
+                        filters['issue_date'] = issue_date
                     except ValueError:
                         pass
         if address_state:
             filters['address_state'] = address_state
 
-        # Filtrando os contratos com os filtros aplicados
         contracts = Contract.objects.filter(**filters)
-
         if not contracts.exists():
             return Response({"detail": "No contracts found matching the criteria."}, status=status.HTTP_404_NOT_FOUND)
-
-        # Calculando os valores agregados
+        
         total_value_to_receive = contracts.annotate(total_value=Sum('parcels__parcel_value')).aggregate(Sum('total_value'))['total_value__sum']
         total_disbursed = contracts.aggregate(Sum('loan_value'))['loan_value__sum']
         total_contracts = contracts.count()
         avg_rate = contracts.aggregate(Avg('contract_rate'))['contract_rate__avg']
 
-        # Criando o resumo
         summary = {
             "total_value_to_receive": total_value_to_receive,
             "total_disbursed": total_disbursed,

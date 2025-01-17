@@ -11,12 +11,13 @@ class ContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contract
-        #Pra que serve o contract_rate? 
+        # Pra que serve o contract_rate? 
+        # Pra calcular a probabilidade de pagamento?
         fields = ['id', 'cpf', 'birth_date', 'issue_date', 'loan_value', 'address_country', 
                   'address_state', 'address_city', 'phone_number', 'contract_rate', 'parcels']
     
 
-    #Cria os Contratos
+    # Cria os Contratos
     def create(self, validated_data):
         parcels_data = validated_data.pop('parcels')
         contract = Contract.objects.create(**validated_data)

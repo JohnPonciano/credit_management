@@ -237,7 +237,7 @@ OK
 - django-filter
 
 ### Instalação
-1. Clone o repositório.
+1. Clone o repositório. `git clone https://github.com/JohnPonciano/credit_management.git`
 2. Instale as dependências com `pip install -r requirements.txt`.
 3. Configure o banco de dados no arquivo `settings.py` se quiser,
      mas já subi um arquivo chamado `credit_management_db.db` que é banco sqlite com alguns cadastros já feitos para facilitar review do codigo.
